@@ -1,36 +1,58 @@
 module PhotoGroove exposing (main)
 
+import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 
 
 urlPrefix =
---    "http://elm-in-action.com/"
+    --    "http://elm-in-action.com/"
     "./"
+
 
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
         , div [ id "thumbnails" ] (List.map (viewThumbnail model.selectedUrl) model.photos)
-        , img [class "large"
-        , src (urlPrefix ++ "" ++ model.selectedUrl)] []
+        , img
+            [ class "large"
+            , src (urlPrefix ++ "" ++ model.selectedUrl)
+            ]
+            []
         ]
 
 
 viewThumbnail selectedUrl thumb =
-    img [ src (urlPrefix ++ thumb.url), classList [("selected", selectedUrl == thumb.url) ]] []
-
+    img
+        [ src (urlPrefix ++ thumb.url)
+        , classList [ ( "selected", selectedUrl == thumb.url ) ]
+        , onClick { description = "clickedPhoto", data = thumb.url }
+        ]
+        []
 
 
 initialModel =
-    { photos = 
+    { photos =
         [ { url = "1.jpeg" }
         , { url = "2.jpeg" }
         , { url = "3.jpeg" }
         ]
-    , selectedUrl = "1.jpeg" }
+    , selectedUrl = "1.jpeg"
+    }
 
+
+update msg model =
+    if msg.description == "clickedPhoto" then
+        { model | selectedUrl = msg.data }
+
+    else
+        model
 
 
 main =
-    view initialModel
+    Browser.sandbox
+        { init = initialModel
+        , view = view
+        , update = update
+        }
