@@ -72,14 +72,15 @@ photoArray =
 
 update : Msg -> Model -> Model
 update msg model =
-    if msg.description == "clickedPhoto" then
-        { model | selectedUrl = msg.data }
+    case msg.description of
+        "clickedPhoto" ->
+            { model | selectedUrl = msg.data }
 
-    else if msg.description == "ClickedSurpriseMe" then
-        { model | selectedUrl = "2.jpeg" }
+        "ClickedSurpriseMe" ->
+            { model | selectedUrl = "2.jpeg" }
 
-    else
-        model
+        _ ->
+            model
 
 
 main =
