@@ -12,8 +12,8 @@ type alias Photo =
 
 urlPrefix : String
 urlPrefix =
-    --    "http://elm-in-action.com/"
-    "./"
+        "http://elm-in-action.com/"
+    --"./"
 
 
 type alias Msg = 
@@ -26,7 +26,7 @@ view model =
         , div [ id "thumbnails" ] (List.map (viewThumbnail model.selectedUrl) model.photos)
         , img
             [ class "large"
-            , src (urlPrefix ++ "" ++ model.selectedUrl)
+            , src (urlPrefix ++ "large/" ++ model.selectedUrl)
             ]
             []
         ]
