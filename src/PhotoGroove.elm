@@ -26,18 +26,20 @@ urlPrefix =
 --"./"
 
 
-type alias Msg =
-    { description : String, data : String }
+type Msg
+    = ClickedPhoto String
+    | ClickedSize ThumbnailSize
+    | ClickedSurpriseMe
 
 
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
-        , button [ onClick { description = "ClickedSurpriseMe", data = "" } ] [ text "Surprise Me!" ]
+        , button [ onClick ClickedSurpriseMe ] [ text "Surprise Me!" ]
         , h3 [] [ text "Thumbnail Size:" ]
         , div [ id "choose-size" ]
-            (List.map viewSizeChooser [Small, Medium, Large ])
+            (List.map viewSizeChooser [ Small, Medium, Large ])
         , div [ id "thumbnails", sizeToClass model.chosenSize ] (List.map (viewThumbnail model.selectedUrl) model.photos)
         , img
             [ class "large"
@@ -52,7 +54,7 @@ viewThumbnail selectedUrl thumb =
     img
         [ src (urlPrefix ++ thumb.url)
         , classList [ ( "selected", selectedUrl == thumb.url ) ]
-        , onClick { description = "clickedPhoto", data = thumb.url }
+        , onClick (ClickedPhoto thumb.url)
         ]
         []
 
@@ -77,6 +79,7 @@ sizeToString size =
         Large ->
             "large"
 
+
 sizeToClass : ThumbnailSize -> Attribute Msg
 sizeToClass size =
     case size of
@@ -88,6 +91,7 @@ sizeToClass size =
 
         Large ->
             class "large"
+
 
 type alias Model =
     { photos : List Photo
@@ -114,24 +118,26 @@ photoArray =
 
 
 getPhotoUrl : Int -> String
-getPhotoUrl index = 
-    case Array.get index photoArray of 
+getPhotoUrl index =
+    case Array.get index photoArray of
         Just photo ->
             photo.url
+
         Nothing ->
             ""
 
+
 update : Msg -> Model -> Model
 update msg model =
-    case msg.description of
-        "clickedPhoto" ->
-            { model | selectedUrl = msg.data }
+    case msg of
+        ClickedPhoto url ->
+            { model | selectedUrl = url }
 
-        "ClickedSurpriseMe" ->
+        ClickedSize size ->
+            { model | chosenSize = size }
+
+        ClickedSurpriseMe ->
             { model | selectedUrl = "2.jpeg" }
-
-        _ ->
-            model
 
 
 main =
