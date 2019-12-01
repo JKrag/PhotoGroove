@@ -38,7 +38,7 @@ view model =
         , h3 [] [ text "Thumbnail Size:" ]
         , div [ id "choose-size" ]
             (List.map viewSizeChooser [Small, Medium, Large ])
-        , div [ id "thumbnails" ] (List.map (viewThumbnail model.selectedUrl) model.photos)
+        , div [ id "thumbnails", sizeToClass model.chosenSize ] (List.map (viewThumbnail model.selectedUrl) model.photos)
         , img
             [ class "large"
             , src (urlPrefix ++ "large/" ++ model.selectedUrl)
@@ -77,6 +77,17 @@ sizeToString size =
         Large ->
             "large"
 
+sizeToClass : ThumbnailSize -> Attribute Msg
+sizeToClass size =
+    case size of
+        Small ->
+            class "small"
+
+        Medium ->
+            class "med"
+
+        Large ->
+            class "large"
 
 type alias Model =
     { photos : List Photo
@@ -101,6 +112,14 @@ photoArray : Array Photo
 photoArray =
     Array.fromList initialModel.photos
 
+
+getPhotoUrl : Int -> String
+getPhotoUrl index = 
+    case Array.get index photoArray of 
+        Just photo ->
+            photo.url
+        Nothing ->
+            ""
 
 update : Msg -> Model -> Model
 update msg model =
