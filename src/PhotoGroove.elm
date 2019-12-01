@@ -5,6 +5,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Random
 
 
 type ThumbnailSize
@@ -126,6 +127,9 @@ getPhotoUrl index =
         Nothing ->
             ""
 
+randonPhotoPicker : Random.Generator Int
+randonPhotoPicker = 
+    Random.int 0 (Array.length photoArray - 1)
 
 update : Msg -> Model -> Model
 update msg model =
