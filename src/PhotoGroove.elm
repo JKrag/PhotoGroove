@@ -29,6 +29,7 @@ urlPrefix =
 
 type Msg
     = ClickedPhoto String
+    | GotSelectedIndex Int
     | ClickedSize ThumbnailSize
     | ClickedSurpriseMe
 
@@ -127,27 +128,32 @@ getPhotoUrl index =
         Nothing ->
             ""
 
+
 randonPhotoPicker : Random.Generator Int
-randonPhotoPicker = 
+randonPhotoPicker =
     Random.int 0 (Array.length photoArray - 1)
 
-update : Msg -> Model -> ( Model, Cmd Msg)
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        GotSelectedIndex index ->
+            ( { model | selectedUrl = getPhotoUrl index }, Cmd.none )
+
         ClickedPhoto url ->
-            ({ model | selectedUrl = url }, Cmd.none)
+            ( { model | selectedUrl = url }, Cmd.none )
 
         ClickedSize size ->
-            ({ model | chosenSize = size }, Cmd.none)
+            ( { model | chosenSize = size }, Cmd.none )
 
         ClickedSurpriseMe ->
-            ({ model | selectedUrl = "2.jpeg" }, Cmd.none)
+            ( model, Random.generate GotSelectedIndex randonPhotoPicker )
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \flags -> (initialModel, Cmd.none)
+        { init = \flags -> ( initialModel, Cmd.none )
         , view = view
         , update = update
         , subscriptions = \model -> Sub.none
