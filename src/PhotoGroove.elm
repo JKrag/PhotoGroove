@@ -151,10 +151,8 @@ update msg model =
                     (model, Cmd.none)
                 Errored errorMessage ->
                     (model, Cmd.none)
-        GotPhotos result -> 
-            case result of 
-            Ok responseStr ->
-                case String.split "," responseStr of
+        GotPhotos (Ok responseStr) ->
+            case String.split "," responseStr of
                 (firstUrl :: _) as urls ->
                     let
                         photos = List.map Photo urls
@@ -163,7 +161,7 @@ update msg model =
                 [] -> 
                         ({model | status = Errored "0 photos found"}, Cmd.none)
 
-            Err httpError -> 
+        GotPhotos (Err _) -> 
                 ({model | status = Errored "Server error!"}, Cmd.none)
 
 
