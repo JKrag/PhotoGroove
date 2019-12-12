@@ -22,6 +22,13 @@ type alias Photo =
     , title: String 
     }
 
+photoDecoder : Decoder Photo
+photoDecoder =
+    succeed Photo
+    |> required "url" string 
+    |> required "size" int 
+    |> optional "title" string "(untitled)"
+
 
 urlPrefix : String
 urlPrefix =
@@ -205,21 +212,5 @@ main =
         , subscriptions = \_ -> Sub.none
         }
 
-photoDecoder : Decoder Photo
-photoDecoder =
-    succeed buildPhoto
-    |> required "url" string 
-    |> required "size" int 
-    |> optional "title" string "(untitled)"
-
-buildPhoto : String -> Int -> String -> Photo
-buildPhoto url size title =
-    {url = url, size = size, title = title}
-
-
--- photoDecoder = map3 (\url size title -> {url = url, size = size, title = title})
--- (field "url" string)
--- (field "size" int)
--- (field "title" string)
 
 
