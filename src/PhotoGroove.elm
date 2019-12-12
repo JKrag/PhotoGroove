@@ -10,27 +10,6 @@ import Json.Decode.Pipeline exposing (optional, required)
 import Random
 
 
-type ThumbnailSize
-    = Small
-    | Medium
-    | Large
-
-
-type alias Photo =
-    { url : String
-    , size : Int
-    , title : String
-    }
-
-
-photoDecoder : Decoder Photo
-photoDecoder =
-    succeed Photo
-        |> required "url" string
-        |> required "size" int
-        |> optional "title" string "(untitled)"
-
-
 urlPrefix : String
 urlPrefix =
     "http://elm-in-action.com/"
@@ -119,6 +98,27 @@ sizeToClass size =
             class "large"
 
 
+type ThumbnailSize
+    = Small
+    | Medium
+    | Large
+
+
+type alias Photo =
+    { url : String
+    , size : Int
+    , title : String
+    }
+
+
+photoDecoder : Decoder Photo
+photoDecoder =
+    succeed Photo
+        |> required "url" string
+        |> required "size" int
+        |> optional "title" string "(untitled)"
+
+
 type Status
     = Loading
     | Loaded (List Photo) String
@@ -136,14 +136,6 @@ initialModel =
     { status = Loading
     , chosenSize = Medium
     }
-
-
-initialCmd : Cmd Msg
-initialCmd =
-    Http.get
-        { url = "http://elm-in-action.com/photos/list.json"
-        , expect = Http.expectJson GotPhotos (list photoDecoder)
-        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -197,6 +189,14 @@ selectUrl url status =
 
         Errored errorMessage ->
             status
+
+
+initialCmd : Cmd Msg
+initialCmd =
+    Http.get
+        { url = "http://elm-in-action.com/photos/list.json"
+        , expect = Http.expectJson GotPhotos (list photoDecoder)
+        }
 
 
 main : Program () Model Msg
