@@ -15,7 +15,7 @@
             var RangeSliderNode = this;
             jsr.addEventListener("update", function(elem, value) {
                 var event = new CustomEvent("slide", {
-                    detail: {userSlideTo: value}
+                    detail: {userSlidTo: value}
                 });
                 RangeSliderNode.dispatchEvent(event);
             });

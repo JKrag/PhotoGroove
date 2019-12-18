@@ -3,9 +3,9 @@ module PhotoGroove exposing (main)
 import Browser
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (on, onClick)
 import Http
-import Json.Decode exposing (Decoder, bool, int, list, string, succeed)
+import Json.Decode exposing (Decoder, at, bool, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Random
@@ -232,3 +232,14 @@ rangeSlider attributes children =
     node "range-slider" attributes children
 
 
+onSlide : (Int -> msg) -> Attribute msg 
+onSlide toMsg = 
+    let
+        detailUserSlidTo : Decoder Int
+        detailUserSlidTo = at [ "detail", "userSlidTo" ] int 
+
+        msgDecoder : Decoder msg 
+        msgDecoder = Json.Decode.map toMsg detailUserSlidTo   
+    in
+        on "slide" msgDecoder
+    
