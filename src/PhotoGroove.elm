@@ -52,7 +52,14 @@ viewFilter name magnitude =
 viewLoaded : List Photo -> String -> ThumbnailSize -> List (Html Msg)
 viewLoaded photos selectedUrl chosenSize =
     [ h1 [] [ text "Photo Groove" ]
-    , button [ onClick ClickedSurpriseMe ] [ text "Surprise Me!" ]
+    , button 
+        [ onClick ClickedSurpriseMe ] 
+        [ text "Surprise Me!" ]
+    , div 
+        [class "filters"] 
+        [ viewFilter "Hue" 0
+        , viewFilter "Ripple" 0
+        , viewFilter "Noise" 0]
     , h3 [] [ text "Thumbnail Size:" ]
     , div [ id "choose-size" ]
         (List.map viewSizeChooser [ Small, Medium, Large ])
