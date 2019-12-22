@@ -13,9 +13,9 @@
                 grid: false
             });
             var RangeSliderNode = this;
-            jsr.addEventListener("update", function(elem, value) {
+            jsr.addEventListener("update", function (elem, value) {
                 var event = new CustomEvent("slide", {
-                    detail: {userSlidTo: value}
+                    detail: { userSlidTo: value }
                 });
                 RangeSliderNode.dispatchEvent(event);
             });
@@ -32,9 +32,14 @@
 
 <body>
     <div id="app"></div>
+    <script src="http://elm-in-action.com/pasta.js" >
+    </script>
     <script src="elm.js"></script>
     <script>
-        Elm.PhotoGroove.init({ node: document.getElementById("app") });          
+        var app = Elm.PhotoGroove.init({ node: document.getElementById("app") });
+        app.ports.setFilters.subscribe(function (options) {
+            Pasta.apply(document.getElementById("main-canvas"), options);
+        });
     </script>
 </body>
 

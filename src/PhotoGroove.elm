@@ -71,11 +71,7 @@ viewLoaded photos selectedUrl model =
     , div [ id "choose-size" ]
         (List.map viewSizeChooser [ Small, Medium, Large ])
     , div [ id "thumbnails", sizeToClass model.chosenSize ] (List.map (viewThumbnail selectedUrl) photos)
-    , img
-        [ class "large"
-        , src (urlPrefix ++ "large/" ++ selectedUrl)
-        ]
-        []
+    , canvas [ id "main-canvas", class "large" ] []
     ]
 
 
@@ -130,7 +126,8 @@ type ThumbnailSize
     | Large
 
 
-port setFilters : FilterOptions-> Cmd msg
+port setFilters : FilterOptions -> Cmd msg
+
 
 type alias FilterOptions =
     { url : String
@@ -177,33 +174,33 @@ initialModel =
     , noise = 5
     }
 
-applyFilters : Model -> (Model, Cmd Msg)
+applyFilters : Model -> ( Model, Cmd Msg )
 applyFilters model =
     case model.status of
         Loaded photos selectedUrl ->
             let
                 filters =
-                    [{ name = "Hue", amount = model.hue}
-                    , { name = "Ripple", amount = model.ripple}
-                    , { name = "Noise", amount = model.noise}
+                    [ { name = "Hue", amount = model.hue }
+                    , { name = "Ripple", amount = model.ripple }
+                    , { name = "Noise", amount = model.noise }
                     ]
                 url = urlPrefix ++ "large/" ++ selectedUrl
-            in 
-                (model , setFilters {url = url, filters=filters })
 
-        Loading -> 
-            (model, Cmd.none)
+            in
+            ( model, setFilters { url = url, filters = filters } )
 
         Errored errorMessage ->
+        Loading ->
             ( model, Cmd.none )
-        
+
+            ( model, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotRandomPhoto photo ->
-            applyFilters  { model | status = selectUrl photo.url model.status }
+            applyFilters { model | status = selectUrl photo.url model.status }
 
         ClickedPhoto url ->
             applyFilters { model | status = selectUrl url model.status }
