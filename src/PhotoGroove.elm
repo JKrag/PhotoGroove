@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
 import Html.Events exposing (on, onClick)
 import Http
-import Json.Decode exposing (Decoder, at, bool, int, list, string, succeed)
+import Json.Decode exposing (Decoder, at, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Random
@@ -131,7 +131,11 @@ port setFilters : FilterOptions -> Cmd msg
 
 type alias FilterOptions =
     { url : String
-    , filters : List { name : String, amount : Int }
+    , filters :
+        List
+            { name : String
+            , amount : Int
+            }
     }
 
 
@@ -174,6 +178,7 @@ initialModel =
     , noise = 5
     }
 
+
 applyFilters : Model -> ( Model, Cmd Msg )
 applyFilters model =
     case model.status of
@@ -184,15 +189,16 @@ applyFilters model =
                     , { name = "Ripple", amount = model.ripple }
                     , { name = "Noise", amount = model.noise }
                     ]
-                url = urlPrefix ++ "large/" ++ selectedUrl
 
+                url =
+                    urlPrefix ++ "large/" ++ selectedUrl
             in
             ( model, setFilters { url = url, filters = filters } )
 
-        Errored errorMessage ->
         Loading ->
             ( model, Cmd.none )
 
+        Errored _ ->
             ( model, Cmd.none )
 
 
@@ -221,7 +227,7 @@ update msg model =
                 Loading ->
                     ( model, Cmd.none )
 
-                Errored errorMessage ->
+                Errored _ ->
                     ( model, Cmd.none )
 
         GotPhotos (Ok photos) ->
@@ -260,7 +266,7 @@ selectUrl url status =
         Loading ->
             status
 
-        Errored errorMessage ->
+        Errored _ ->
             status
 
 
