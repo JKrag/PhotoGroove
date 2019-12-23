@@ -173,9 +173,9 @@ initialModel : Model
 initialModel =
     { status = Loading
     , chosenSize = Medium
-    , hue = 5
-    , ripple = 5
-    , noise = 5
+    , hue = 0
+    , ripple = 0
+    , noise = 0
     }
 
 
@@ -233,7 +233,12 @@ update msg model =
         GotPhotos (Ok photos) ->
             case photos of
                 first :: rest ->
-                    ( { model | status = Loaded photos first.url }, Cmd.none )
+                    applyFilters
+                        { model 
+                            | status = 
+                                case List.head photos of 
+                                    Just photo -> Loaded photos first.url 
+                                    Nothing -> Loaded [] ""}
 
                 [] ->
                     ( { model | status = Errored "0 photos found" }, Cmd.none )
